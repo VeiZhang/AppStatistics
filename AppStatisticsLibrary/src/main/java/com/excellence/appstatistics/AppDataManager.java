@@ -80,23 +80,52 @@ public class AppDataManager
 		List<AppInfo> appInfoList = new ArrayList<>();
 		for (UsageStats usageStats : usageStatsList)
 		{
-			int usedCount = 0;
-			List<ActivityInfo> activityInfoList = new ArrayList<>();
 			String pkg = usageStats.getPackageName();
-			for (int i = 0; i < eventList.size() - 1; i++)
-			{
-				UsageEvents.Event preEvent = eventList.get(i);
-				UsageEvents.Event nextEvent = eventList.get(i + 1);
-				if (pkg.equals(preEvent.getPackageName()) && preEvent.getClassName().equals(nextEvent.getClassName()))
-				{
-					activityInfoList.add(new ActivityInfo(preEvent.getClassName(), preEvent.getTimeStamp(), nextEvent.getTimeStamp()));
-					usedCount++;
-				}
-				i++;
-			}
-			appInfoList.add(new AppInfo(usedCount, usageStats.getTotalTimeInForeground(), pkg, activityInfoList));
+			List<List<ActivityInfo>> activityInfoList = formatOneTimeAppInfo(pkg, eventList);
+			appInfoList.add(new AppInfo(activityInfoList.size(), usageStats.getTotalTimeInForeground(), pkg, activityInfoList));
 		}
 		return appInfoList;
+	}
+
+	/**
+	 * 应用一次打开：可以是单个Activity或者多个Activity
+	 * 如果是单个Activity，那就是两个相同包名和Activity名字的{@link android.app.usage.UsageEvents.Event}
+	 * 如果是多个Activity，那就是连续的{@link android.app.usage.UsageEvents.Event}
+	 *
+	 * @param pkg
+	 * @param eventList
+	 * @return
+	 */
+	@TargetApi(Build.VERSION_CODES.LOLLIPOP)
+	private List<List<ActivityInfo>> formatOneTimeAppInfo(String pkg, List<UsageEvents.Event> eventList)
+	{
+		List<List<ActivityInfo>> activityInfoList = new ArrayList<>();
+		List<ActivityInfo> oneTimeActivityInfoList = new ArrayList<>();
+		for (int i = 0; i < eventList.size() - 1; i++)
+		{
+			UsageEvents.Event preEvent = eventList.get(i);
+			UsageEvents.Event nextEvent = eventList.get(i + 1);
+			if (pkg.equals(preEvent.getPackageName()) && preEvent.getClassName().equals(nextEvent.getClassName()))
+			{
+				/**
+				 * 过滤指定的应用：一次打开应用的时候收集的所有痕迹
+				 */
+				oneTimeActivityInfoList.add(new ActivityInfo(preEvent.getClassName(), preEvent.getTimeStamp(), nextEvent.getTimeStamp()));
+			}
+			else
+			{
+				/**
+				 * 收集指定包名所有打开次数的痕迹：注意连续的Event算一次打开
+				 */
+				if (oneTimeActivityInfoList.size() > 0)
+				{
+					activityInfoList.add(oneTimeActivityInfoList);
+					oneTimeActivityInfoList = new ArrayList<>();
+				}
+			}
+			i++;
+		}
+		return activityInfoList;
 	}
 
 	private class ResultListener implements ISearchListener

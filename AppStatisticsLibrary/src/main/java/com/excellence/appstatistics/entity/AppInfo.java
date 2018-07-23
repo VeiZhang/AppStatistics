@@ -15,9 +15,9 @@ public class AppInfo
 	private int mUsedCount;
 	private long mUsedTime;
 	private String mPackageName;
-	private List<ActivityInfo> mActivityInfoList;
+	private List<List<ActivityInfo>> mActivityInfoList;
 
-	public AppInfo(int usedCount, long usedTime, String packageName, List<ActivityInfo> activityInfoList)
+	public AppInfo(int usedCount, long usedTime, String packageName, List<List<ActivityInfo>> activityInfoList)
 	{
 		mUsedCount = usedCount;
 		mUsedTime = usedTime;
@@ -40,7 +40,7 @@ public class AppInfo
 		return mPackageName;
 	}
 
-	public List<ActivityInfo> getActivityInfoList()
+	public List<List<ActivityInfo>> getActivityInfoList()
 	{
 		return mActivityInfoList;
 	}
