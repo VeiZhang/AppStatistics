@@ -1,7 +1,6 @@
 package com.excellence.appstatistics;
 
-import android.app.usage.UsageEvents;
-import android.app.usage.UsageStats;
+import com.excellence.appstatistics.entity.AppInfo;
 
 import java.util.List;
 
@@ -15,5 +14,5 @@ import java.util.List;
 */
 public interface ISearchListener
 {
-	void onSuccess(List<UsageEvents.Event> eventList, List<UsageStats> usageStatsList);
+	void onSuccess(List<AppInfo> appInfoList);
 }

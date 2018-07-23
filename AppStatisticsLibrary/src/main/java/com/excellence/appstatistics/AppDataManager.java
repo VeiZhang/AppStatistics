@@ -49,7 +49,7 @@ public class AppDataManager
 	@TargetApi(Build.VERSION_CODES.LOLLIPOP)
 	public void search(long days, ISearchListener listener)
 	{
-		ISearchListener searchListener = new ResultListener(listener);
+		ISearchListener searchListener = new SearchListener(listener);
 		long startTime = 0;
 		long endTime = 0;
 		if (days == 0)
@@ -72,6 +72,7 @@ public class AppDataManager
 		List<UsageEvents.Event> eventList = queryEventList(mContext, startTime, endTime);
 		List<UsageStats> usageStatsList = queryUsageStatsList(mContext, startTime, endTime);
 		List<AppInfo> appInfoList = generateAppInfoList(eventList, usageStatsList);
+		searchListener.onSuccess(appInfoList);
 	}
 
 	@TargetApi(Build.VERSION_CODES.LOLLIPOP)
@@ -135,21 +136,21 @@ public class AppDataManager
 		return activityInfoList;
 	}
 
-	private class ResultListener implements ISearchListener
+	private class SearchListener implements ISearchListener
 	{
 		private ISearchListener mSearchListener = null;
 
-		public ResultListener(ISearchListener listener)
+		public SearchListener(ISearchListener listener)
 		{
 			mSearchListener = listener;
 		}
 
 		@Override
-		public void onSuccess(List<UsageEvents.Event> eventList, List<UsageStats> usageStatsList)
+		public void onSuccess(List<AppInfo> appInfoList)
 		{
 			if (mSearchListener != null)
 			{
-				mSearchListener.onSuccess(eventList, usageStatsList);
+				mSearchListener.onSuccess(appInfoList);
 			}
 		}
 	}
