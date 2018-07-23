@@ -65,7 +65,7 @@ public class EventKit
 	{
 		List<UsageEvents.Event> tempList = new ArrayList<>(eventList);
 		eventList.clear();
-		for (int i = 0; i < tempList.size() - 1; i += 2)
+		for (int i = 0; i < tempList.size() - 1; i++)
 		{
 			UsageEvents.Event preItem = tempList.get(i);
 			UsageEvents.Event nextItem = tempList.get(i + 1);
@@ -79,6 +79,11 @@ public class EventKit
 				{
 					eventList.add(preItem);
 					eventList.add(nextItem);
+					/**
+					 * 正常：P0=1、P1=2则每次都加2
+					 * 异常：P0=1、P1=1则每次都加1
+					 */
+					i++;
 				}
 			}
 			else
