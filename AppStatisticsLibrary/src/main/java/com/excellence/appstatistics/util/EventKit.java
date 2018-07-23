@@ -12,6 +12,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import static android.app.usage.UsageEvents.Event.MOVE_TO_BACKGROUND;
+import static android.app.usage.UsageEvents.Event.MOVE_TO_FOREGROUND;
+
 /**
  * <pre>
  *     author : VeiZhang
@@ -68,13 +71,14 @@ public class EventKit
 			UsageEvents.Event nextItem = tempList.get(i + 1);
 			if (preItem.getClassName().equals(nextItem.getClassName()))
 			{
-				if (preItem.getEventType() != 1 || nextItem.getEventType() != 2)
+				if (preItem.getEventType() != MOVE_TO_FOREGROUND || nextItem.getEventType() != MOVE_TO_BACKGROUND)
 				{
 					Log.e(TAG, "checkEventList: event exception - " + preItem.getPackageName());
 				}
 				else
 				{
 					eventList.add(preItem);
+					eventList.add(nextItem);
 				}
 			}
 			else
