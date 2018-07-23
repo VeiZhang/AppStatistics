@@ -116,10 +116,17 @@ public class AppDataManager
 			{
 				/**
 				 * 收集指定包名所有打开次数的痕迹：注意连续的Event算一次打开
+				 * 包名不对时，则此次痕迹收集完毕，再进行下一次检索
 				 */
 				if (oneTimeActivityInfoList.size() > 0)
 				{
+					/**
+					 * 添加一次打开记录
+					 */
 					activityInfoList.add(oneTimeActivityInfoList);
+					/**
+					 * 继续下一次打开痕迹的采集
+					 */
 					oneTimeActivityInfoList = new ArrayList<>();
 				}
 			}
