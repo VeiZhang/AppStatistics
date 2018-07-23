@@ -46,13 +46,16 @@ public class AppDataManager
 		mContext = context;
 	}
 
-	@TargetApi(Build.VERSION_CODES.LOLLIPOP)
-	public void search(long days, ISearchListener listener)
+	/**
+	 * 时间戳里的应用痕迹
+	 *
+	 * @param startTime
+	 * @param endTime
+	 * @param listener
+	 */
+	public void search(long startTime, long endTime, ISearchListener listener)
 	{
-		ISearchListener searchListener = new SearchListener(listener);
-		long startTime = 0;
-		long endTime = 0;
-		if (days == 0)
+		if (endTime <= 0)
 		{
 			/**
 			 * 默认获取当天
@@ -60,7 +63,25 @@ public class AppDataManager
 			endTime = System.currentTimeMillis();
 			startTime = getZeroClockTime(endTime);
 		}
-		else
+		ISearchListener searchListener = new SearchListener(listener);
+		List<UsageEvents.Event> eventList = queryEventList(mContext, startTime, endTime);
+		List<UsageStats> usageStatsList = queryUsageStatsList(mContext, startTime, endTime);
+		List<AppInfo> appInfoList = generateAppInfoList(eventList, usageStatsList);
+		searchListener.onSuccess(appInfoList);
+	}
+
+	/**
+	 * 前几天的当天：一天里的应用痕迹
+	 *
+	 * @param days
+	 * @param listener
+	 */
+	@TargetApi(Build.VERSION_CODES.LOLLIPOP)
+	public void search(long days, ISearchListener listener)
+	{
+		long startTime = 0;
+		long endTime = 0;
+		if (days > 0)
 		{
 			/**
 			 * 距离现在的前多少天当天
@@ -69,10 +90,7 @@ public class AppDataManager
 			endTime = getZeroClockTime(System.currentTimeMillis() - DAY * (days - 1)) - 1;
 			startTime = endTime - DAY;
 		}
-		List<UsageEvents.Event> eventList = queryEventList(mContext, startTime, endTime);
-		List<UsageStats> usageStatsList = queryUsageStatsList(mContext, startTime, endTime);
-		List<AppInfo> appInfoList = generateAppInfoList(eventList, usageStatsList);
-		searchListener.onSuccess(appInfoList);
+		search(startTime, endTime, listener);
 	}
 
 	@TargetApi(Build.VERSION_CODES.LOLLIPOP)
