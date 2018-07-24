@@ -43,6 +43,9 @@ public class AppDataManager
 	private IPermissionListener mPermissionListener = null;
 	private IUsageEventListener mUsageEventListenerImp = null;
 	private IUsageEventListener mUsageEventListener = null;
+	private List<AppInfo> mAppInfoList = null;
+	private List<UsageEvents.Event> mEventList = null;
+	private List<UsageStats> mUsageStatsList = null;
 
 	public static AppDataManager with(Context context)
 	{
@@ -58,6 +61,9 @@ public class AppDataManager
 		mContext = context;
 		mPermissionListener = new PermissionListener();
 		mUsageEventListenerImp = new UsageEventListenerImp();
+		mAppInfoList = new ArrayList<>();
+		mEventList = new ArrayList<>();
+		mUsageStatsList = new ArrayList<>();
 	}
 
 	/**
@@ -182,6 +188,47 @@ public class AppDataManager
 		return activityInfoList;
 	}
 
+	/**
+	 * 上一次查询的数据
+	 *
+	 * @return
+	 */
+	public static List<AppInfo> getAppInfoList()
+	{
+		checkManager();
+		return mInstance.mAppInfoList;
+	}
+
+	/**
+	 * 上一次查询的数据
+	 *
+	 * @return
+	 */
+	public static List<UsageEvents.Event> getEventList()
+	{
+		checkManager();
+		return mInstance.mEventList;
+	}
+
+	/**
+	 * 上一次查询的数据
+	 * 
+	 * @return
+	 */
+	public static List<UsageStats> getUsageStatsList()
+	{
+		checkManager();
+		return mInstance.mUsageStatsList;
+	}
+
+	private static void checkManager()
+	{
+		if (mInstance == null)
+		{
+			throw new RuntimeException("AppDataManager not initialized!!!");
+		}
+	}
+
 	private class UsageEventListenerImp implements IUsageEventListener
 	{
 
@@ -209,10 +256,10 @@ public class AppDataManager
 		@Override
 		public void onPermissionGranted()
 		{
-			List<UsageEvents.Event> eventList = queryEventList(mContext, mStartTime, mEndTime);
-			List<UsageStats> usageStatsList = queryUsageStatsList(mContext, mStartTime, mEndTime);
-			List<AppInfo> appInfoList = generateAppInfoList(eventList, usageStatsList);
-			mUsageEventListenerImp.onSuccess(appInfoList);
+			mEventList = queryEventList(mContext, mStartTime, mEndTime);
+			mUsageStatsList = queryUsageStatsList(mContext, mStartTime, mEndTime);
+			mAppInfoList = generateAppInfoList(mEventList, mUsageStatsList);
+			mUsageEventListenerImp.onSuccess(mAppInfoList);
 		}
 
 		@Override
