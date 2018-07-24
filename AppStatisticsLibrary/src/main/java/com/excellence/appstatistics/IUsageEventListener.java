@@ -12,7 +12,9 @@ import java.util.List;
 *     desc   :
 * </pre> 
 */
-public interface ISearchListener
+public interface IUsageEventListener
 {
 	void onSuccess(List<AppInfo> appInfoList);
+
+	void onError(Throwable t);
 }

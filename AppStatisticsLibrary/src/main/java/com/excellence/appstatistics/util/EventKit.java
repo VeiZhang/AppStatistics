@@ -1,6 +1,7 @@
 package com.excellence.appstatistics.util;
 
 import android.annotation.TargetApi;
+import android.app.AppOpsManager;
 import android.app.usage.UsageEvents;
 import android.app.usage.UsageStats;
 import android.app.usage.UsageStatsManager;
@@ -114,5 +115,13 @@ public class EventKit
 			Log.e(TAG, "queryUsageStatsList: api version below");
 		}
 		return usageStatsList;
+	}
+
+	@TargetApi(Build.VERSION_CODES.KITKAT)
+	public static boolean checkUsagePermission(Context context)
+	{
+		AppOpsManager appOpsManager = (AppOpsManager) context.getSystemService(Context.APP_OPS_SERVICE);
+		int mode = appOpsManager.checkOpNoThrow(AppOpsManager.OPSTR_GET_USAGE_STATS, android.os.Process.myUid(), context.getPackageName());
+		return mode == AppOpsManager.MODE_ALLOWED;
 	}
 }

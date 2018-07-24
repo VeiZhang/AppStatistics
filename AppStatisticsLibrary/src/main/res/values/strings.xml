@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">AppStatisticsLibrary</string>
+    <string name="setting_prompt">Request access permission</string>
+    <string name="allow_permission">Please allow permission, or you won\'t read the information!
+    </string>
+    <string name="cancel">Cancel</string>
+    <string name="open">Open</string>
 </resources>

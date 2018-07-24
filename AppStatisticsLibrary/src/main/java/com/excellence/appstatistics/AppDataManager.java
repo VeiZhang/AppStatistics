@@ -4,7 +4,9 @@ import android.annotation.TargetApi;
 import android.app.usage.UsageEvents;
 import android.app.usage.UsageStats;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Build;
+import android.provider.Settings;
 
 import com.excellence.appstatistics.entity.AppInfo;
 import com.excellence.appstatistics.entity.ActivityInfo;
@@ -12,6 +14,7 @@ import com.excellence.appstatistics.entity.ActivityInfo;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.excellence.appstatistics.util.EventKit.checkUsagePermission;
 import static com.excellence.appstatistics.util.EventKit.queryEventList;
 import static com.excellence.appstatistics.util.EventKit.queryUsageStatsList;
 import static com.excellence.appstatistics.util.TimeKit.DAY;
@@ -22,7 +25,9 @@ import static com.excellence.appstatistics.util.TimeKit.getZeroClockTime;
  *     author : VeiZhang
  *     blog   : http://tiimor.cn
  *     time   : 2018/7/19
- *     desc   :
+ *     desc   : 权限 {@link android.Manifest.permission#PACKAGE_USAGE_STATS}
+ *     			开启 {@link Settings#ACTION_USAGE_ACCESS_SETTINGS}
+ *     @see
  * </pre>
  */
 public class AppDataManager
@@ -31,6 +36,11 @@ public class AppDataManager
 
 	private static AppDataManager mInstance = null;
 	private Context mContext = null;
+	private long mStartTime = 0;
+	private long mEndTime = 0;
+	private IPermissionListener mPermissionListener = null;
+	private IUsageEventListener mUsageEventListenerImp = null;
+	private IUsageEventListener mUsageEventListener = null;
 
 	public static AppDataManager with(Context context)
 	{
@@ -44,6 +54,8 @@ public class AppDataManager
 	private AppDataManager(Context context)
 	{
 		mContext = context;
+		mPermissionListener = new PermissionListener();
+		mUsageEventListenerImp = new UsageEventListenerImp();
 	}
 
 	/**
@@ -53,7 +65,7 @@ public class AppDataManager
 	 * @param endTime
 	 * @param listener
 	 */
-	public void search(long startTime, long endTime, ISearchListener listener)
+	public void search(long startTime, long endTime, IUsageEventListener listener)
 	{
 		if (endTime <= 0)
 		{
@@ -63,11 +75,25 @@ public class AppDataManager
 			endTime = System.currentTimeMillis();
 			startTime = getZeroClockTime(endTime);
 		}
-		ISearchListener searchListener = new SearchListener(listener);
-		List<UsageEvents.Event> eventList = queryEventList(mContext, startTime, endTime);
-		List<UsageStats> usageStatsList = queryUsageStatsList(mContext, startTime, endTime);
-		List<AppInfo> appInfoList = generateAppInfoList(eventList, usageStatsList);
-		searchListener.onSuccess(appInfoList);
+		mStartTime = startTime;
+		mEndTime = endTime;
+		mUsageEventListener = listener;
+		if (checkUsagePermission(mContext))
+		{
+			mPermissionListener.onPermissionGranted();
+		}
+		else
+		{
+			startPermissionActivity();
+		}
+	}
+
+	private void startPermissionActivity()
+	{
+		PermissionActivity.setPermissionListener(mPermissionListener);
+		Intent intent = new Intent(mContext, PermissionActivity.class);
+		intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+		mContext.startActivity(intent);
 	}
 
 	/**
@@ -77,7 +103,7 @@ public class AppDataManager
 	 * @param listener
 	 */
 	@TargetApi(Build.VERSION_CODES.LOLLIPOP)
-	public void search(long days, ISearchListener listener)
+	public void search(long days, IUsageEventListener listener)
 	{
 		long startTime = 0;
 		long endTime = 0;
@@ -154,22 +180,43 @@ public class AppDataManager
 		return activityInfoList;
 	}
 
-	private class SearchListener implements ISearchListener
+	private class UsageEventListenerImp implements IUsageEventListener
 	{
-		private ISearchListener mSearchListener = null;
-
-		public SearchListener(ISearchListener listener)
-		{
-			mSearchListener = listener;
-		}
 
 		@Override
 		public void onSuccess(List<AppInfo> appInfoList)
 		{
-			if (mSearchListener != null)
+			if (mUsageEventListener != null)
 			{
-				mSearchListener.onSuccess(appInfoList);
+				mUsageEventListener.onSuccess(appInfoList);
 			}
+		}
+
+		@Override
+		public void onError(Throwable t)
+		{
+			if (mUsageEventListener != null)
+			{
+				mUsageEventListener.onError(t);
+			}
+		}
+	}
+
+	private class PermissionListener implements IPermissionListener
+	{
+		@Override
+		public void onPermissionGranted()
+		{
+			List<UsageEvents.Event> eventList = queryEventList(mContext, mStartTime, mEndTime);
+			List<UsageStats> usageStatsList = queryUsageStatsList(mContext, mStartTime, mEndTime);
+			List<AppInfo> appInfoList = generateAppInfoList(eventList, usageStatsList);
+			mUsageEventListenerImp.onSuccess(appInfoList);
+		}
+
+		@Override
+		public void onPermissionDenied()
+		{
+			mUsageEventListenerImp.onError(new Throwable("Permission denied"));
 		}
 	}
 }
