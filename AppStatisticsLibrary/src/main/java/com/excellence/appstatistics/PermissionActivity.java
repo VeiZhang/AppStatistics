@@ -8,6 +8,8 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.support.annotation.Nullable;
 
+import com.excellence.appstatistics.callback.IPermissionListener;
+
 import static com.excellence.appstatistics.util.EventKit.checkUsagePermission;
 
 /**

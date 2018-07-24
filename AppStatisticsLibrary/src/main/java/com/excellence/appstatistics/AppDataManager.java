@@ -8,6 +8,8 @@ import android.content.Intent;
 import android.os.Build;
 import android.provider.Settings;
 
+import com.excellence.appstatistics.callback.IPermissionListener;
+import com.excellence.appstatistics.callback.IUsageEventListener;
 import com.excellence.appstatistics.entity.AppInfo;
 import com.excellence.appstatistics.entity.ActivityInfo;
 

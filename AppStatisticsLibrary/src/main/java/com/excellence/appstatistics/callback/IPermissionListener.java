@@ -1,4 +1,4 @@
-package com.excellence.appstatistics;
+package com.excellence.appstatistics.callback;
 
 /**
  * <pre>
@@ -8,7 +8,7 @@ package com.excellence.appstatistics;
  *     desc   :
  * </pre> 
  */
-interface IPermissionListener
+public interface IPermissionListener
 {
 	void onPermissionGranted();
 

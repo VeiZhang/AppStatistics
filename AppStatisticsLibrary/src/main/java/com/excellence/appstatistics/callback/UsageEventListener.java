@@ -1,4 +1,4 @@
-package com.excellence.appstatistics;
+package com.excellence.appstatistics.callback;
 
 import com.excellence.appstatistics.entity.AppInfo;
 

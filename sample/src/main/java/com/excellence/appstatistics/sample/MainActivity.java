@@ -5,7 +5,7 @@ import android.os.Bundle;
 import android.widget.Toast;
 
 import com.excellence.appstatistics.AppDataManager;
-import com.excellence.appstatistics.IUsageEventListener;
+import com.excellence.appstatistics.callback.IUsageEventListener;
 import com.excellence.appstatistics.entity.AppInfo;
 
 import java.util.List;
