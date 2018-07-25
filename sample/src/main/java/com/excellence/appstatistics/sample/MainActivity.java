@@ -57,7 +57,7 @@ public class MainActivity extends AppCompatActivity
 			break;
 
 		case TYPE_ACTIVITY:
-			setTitle(" 单个应用使用一次期间的Activity:" + pkg);
+			setTitle("单个应用使用一次期间的Activity:" + pkg);
 			initActivityView(pkg, pos);
 			break;
 		}

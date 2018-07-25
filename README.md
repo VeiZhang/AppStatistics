@@ -1,4 +1,4 @@
-# 应用程序统计
+# 应用程序统计，采集应用打开痕迹
 
 [![Download][icon_download]][download]
 
@@ -14,11 +14,17 @@ compile 'com.excellence:app-statistics:1.0.0'
 
 ## 示例
 
-* ![All][All]
+* 全部应用数据
 
-* ![App][App]
+    ![All][All]
 
-* ![Activity][Activity]
+* 单个应用具体数据
+
+    ![App][App]
+
+* 单个应用使用一次期间的Activity痕迹
+
+    ![Activity][Activity]
 
 
 ## 版本
