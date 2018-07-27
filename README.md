@@ -3,7 +3,7 @@
 [![Download][icon_download]][download]
 
 ```
-compile 'com.excellence:app-statistics:1.0.0'
+compile 'com.excellence:app-statistics:_latestVersion'
 ```
 
 ## 说明
@@ -31,7 +31,8 @@ compile 'com.excellence:app-statistics:1.0.0'
 
 | 版本 | 描述 |
 | ---- | --- |
-| [1.0.0][1.0.0] | 判断访问权限，统计应用使用信息 |
+| [1.0.1][1.0.1] | 优化权限判断 **2018-7-27** |
+| [1.0.0][1.0.0] | 判断访问权限，统计应用使用信息 **2018-7-25** |
 
 
 ## 感谢

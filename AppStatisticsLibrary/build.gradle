@@ -76,7 +76,7 @@ publish {
     userOrg = org
     groupId = 'com.excellence'
     artifactId = 'app-statistics'
-    publishVersion = '1.0.0'
+    publishVersion = '1.0.1'
     desc = 'Android应用统计工具'
     website = 'https://github.com/VeiZhang/AppStatistics'
     licences = ['Apache-2.0']
