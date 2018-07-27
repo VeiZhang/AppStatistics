@@ -6,6 +6,7 @@ import android.app.usage.UsageEvents;
 import android.app.usage.UsageStats;
 import android.app.usage.UsageStatsManager;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.os.Build;
 import android.util.Log;
 
@@ -122,6 +123,14 @@ public class EventKit
 	{
 		AppOpsManager appOpsManager = (AppOpsManager) context.getSystemService(Context.APP_OPS_SERVICE);
 		int mode = appOpsManager.checkOpNoThrow(AppOpsManager.OPSTR_GET_USAGE_STATS, android.os.Process.myUid(), context.getPackageName());
-		return mode == AppOpsManager.MODE_ALLOWED;
+
+		if (mode == AppOpsManager.MODE_DEFAULT)
+		{
+			return context.checkCallingOrSelfPermission(android.Manifest.permission.PACKAGE_USAGE_STATS) == PackageManager.PERMISSION_GRANTED;
+		}
+		else
+		{
+			return mode == AppOpsManager.MODE_ALLOWED;
+		}
 	}
 }
