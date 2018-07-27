@@ -31,7 +31,7 @@ compile 'com.excellence:app-statistics:_latestVersion'
 
 | 版本 | 描述 |
 | ---- | --- |
-| [1.0.1][1.0.1] | 优化权限判断 **2018-7-27** |
+| [1.0.1][1.0.1] | 优化权限检测 **2018-7-27** |
 | [1.0.0][1.0.0] | 判断访问权限，统计应用使用信息 **2018-7-25** |
 
 
@@ -55,4 +55,5 @@ compile 'com.excellence:app-statistics:_latestVersion'
 
 <!-- 版本 -->
 
+[1.0.1]:https://bintray.com/veizhang/maven/app-statistics/1.0.1
 [1.0.0]:https://bintray.com/veizhang/maven/app-statistics/1.0.0
